@@ -38,3 +38,44 @@
  */
 
 // Your code goes here...
+
+const cardsContainer = document.querySelector(".cardsContainer");
+const cards = document.querySelectorAll(".card");
+
+function updateColors() {
+  cards.forEach((card) => {
+    if (card.dataset.fav === "true") {
+      card.classList.add("red");
+    } else {
+      card.classList.remove("red");
+    }
+  });
+}
+
+cardsContainer.addEventListener("click", (e) => {
+  const favs = localStorage.getItem("favs");
+  if (!favs) {
+    e.target.setAttribute("data-fav", "true");
+    localStorage.setItem("favs", [e.target.id]);
+  } else if (favs.includes(e.target.id)) {
+    const favIds = favs.split(",").filter((id) => id !== e.target.id);
+    e.target.setAttribute("data-fav", "false");
+    localStorage.setItem("favs", favIds);
+  } else {
+    e.target.setAttribute("data-fav", "true");
+    localStorage.setItem("favs", favs + `,${e.target.id}`);
+  }
+  updateColors();
+});
+
+const storedFavs = localStorage.getItem("favs");
+if (storedFavs) {
+  cards.forEach((card) =>
+    card.setAttribute(
+      "data-fav",
+      storedFavs.includes(card.id) ? "true" : "false"
+    )
+  );
+}
+
+updateColors();
